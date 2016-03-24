@@ -15,6 +15,8 @@ object RedisUtils {
 
       val port = config.ports.next()
 
+      ensureFileExecutable(providers(config.version).get(), logger)
+
       val redisServer = new RedisServer.Builder()
         .redisExecProvider(providers(config.version))
         .port(port)
@@ -33,10 +35,17 @@ object RedisUtils {
 
       logger.info("Starting Redis Cluster")
 
+      ensureFileExecutable(providers(config.version).get(), logger)
+
       val redisCluster = new RedisCluster.Builder()
-        //        .serverPorts(config.ports)
+        .serverPorts(config.ports)
+        .numOfMasters(config.numOfMaster)
         .withServerBuilder(new RedisServer.Builder().redisExecProvider(providers(config.version)))
         .build()
+
+      redisCluster.start()
+
+      logger.info(s"Redis Cluster started on ports ${redisCluster.ports()}")
 
       redisCluster
     }
@@ -48,6 +57,13 @@ object RedisUtils {
     }
     if (redisClusters != null) {
       redisClusters.foreach(_.stop())
+    }
+  }
+
+  private def ensureFileExecutable(file: File, logger: Logger) = {
+    if (!file.canExecute) {
+      logger.debug(s"Making ${file.getAbsolutePath} executable.")
+      file.setExecutable(true, true)
     }
   }
 }

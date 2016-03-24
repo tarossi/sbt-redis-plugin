@@ -15,17 +15,26 @@ object RedisPlugin extends AutoPlugin {
 
   override lazy val projectSettings = defaultSettings
 
-  def defaultSettings: Seq[Setting[_]] = {
+  def defaultSettings: Seq[Setting[_]] = Seq(
+    redisInstances := Seq.empty,
+    redisBinaries := Seq(
+      ("3.0.7", OS.MAC_OS_X, Architecture.x86_64) -> getResourcePath("redis-server-3.0.7-darwin"),
+      ("3.0.7", OS.UNIX, Architecture.x86_64) -> getResourcePath("redis-server-3.0.7")
+    ),
 
-    Seq(
-      redisInstances := Seq.empty,
-      redisBinaries := Seq.empty,
+    startRedis := effectivelyStartRedis(redisBinaries.value, redisInstances.value, streams.value.log),
+    stopRedis := effectivelyStopRedis(streams.value.log),
 
-      startRedis := effectivelyStartRedis(redisBinaries.value, redisInstances.value, streams.value.log),
-      stopRedis := effectivelyStopRedis(streams.value.log),
+    (test in Test) <<= stopRedis.dependsOn((test in Test).dependsOn(startRedis))
+  )
 
-      (test in Test) <<= stopRedis.dependsOn((test in Test).dependsOn(startRedis))
-    )
+  def getResourcePath(name: String): String = {
+    val resource = getClass.getResource(name)
+    if (resource == null) {
+      // TODO Find a way to access a Logger from a SettingKey
+      println(s"File is not in the classpath: $name")
+      ""
+    } else resource.getPath
   }
 
   def buildProvider(redisBinaries: Seq[((String, OS, Architecture), String)]) = {
@@ -48,7 +57,8 @@ object RedisPlugin extends AutoPlugin {
   def effectivelyStartRedis(redisBinaries: Seq[((String, OS, Architecture), String)], redis: Seq[RedisInstance], logger: Logger): Unit = {
     val redisExecProviders = buildProvider(redisBinaries)
 
-    logger.info(s"Starting redis servers: $redis with $redisBinaries")
+    logger.info(s"Redis configuration: ${redisBinaries.toMap}")
+    logger.info(s"Starting redis servers: $redis")
 
     RedisUtils.startRedisCluster(logger, redisExecProviders, redis.filter(m => m.isRedisCluster))
     RedisUtils.startRedisServer(logger, redisExecProviders, redis.filter(m => m.isRedisServer))

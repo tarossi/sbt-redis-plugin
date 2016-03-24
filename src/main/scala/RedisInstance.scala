@@ -11,10 +11,19 @@ object RedisInstance {
   private def scalaToJava(list: Seq[Int]): util.List[Integer] = {
     seqAsJavaList(list).asInstanceOf[util.List[Integer]]
   }
+
+  val CLUSTER = "cluster"
+  val SERVER = "server"
 }
 
-case class RedisInstance(version: String, kind: String, ports: PortProvider) {
-  def isRedisCluster = kind == "cluster"
+case class RedisInstance(version: String,
+                         kind: String,
+                         ports: PortProvider,
+                         numOfMaster: Int = 3) {
 
-  def isRedisServer = kind == "server"
+  import RedisInstance._
+
+  def isRedisCluster = kind == CLUSTER
+
+  def isRedisServer = kind == SERVER
 }
