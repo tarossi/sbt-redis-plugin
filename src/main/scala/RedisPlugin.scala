@@ -25,14 +25,18 @@ object RedisPlugin extends AutoPlugin {
     startRedis := effectivelyStartRedis(redisBinaries.value, redisInstances.value, streams.value.log),
     stopRedis := effectivelyStopRedis(streams.value.log),
 
-    (test in Test) <<= stopRedis.dependsOn((test in Test).dependsOn(startRedis))
+    (test in Test) <<= {
+      val t = (test in Test).dependsOn(startRedis)
+
+      t.andFinally(RedisUtils.stopRedisInstances())
+    }
   )
 
   def getResourcePath(name: String): String = {
     val resource = getClass.getResource(name)
     if (resource == null) {
       // TODO Find a way to access a Logger from a SettingKey
-      println(s"File is not in the classpath: $name")
+//      logger.error(s"File is not in the classpath: $name")
       ""
     } else resource.getPath
   }
@@ -57,8 +61,8 @@ object RedisPlugin extends AutoPlugin {
   def effectivelyStartRedis(redisBinaries: Seq[((String, OS, Architecture), String)], redis: Seq[RedisInstance], logger: Logger): Unit = {
     val redisExecProviders = buildProvider(redisBinaries)
 
-    logger.info(s"Redis configuration: ${redisBinaries.toMap}")
-    logger.info(s"Starting redis servers: $redis")
+    logger.debug(s"Redis configuration: ${redisBinaries.toMap}")
+    logger.debug(s"Redis servers defined: $redis")
 
     RedisUtils.startRedisCluster(logger, redisExecProviders, redis.filter(m => m.isRedisCluster))
     RedisUtils.startRedisServer(logger, redisExecProviders, redis.filter(m => m.isRedisServer))

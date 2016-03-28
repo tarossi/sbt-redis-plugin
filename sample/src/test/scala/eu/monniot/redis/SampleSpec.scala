@@ -27,4 +27,8 @@ class SampleSpec extends FlatSpec with Matchers {
     redis.set("test", "OK")
     redis.get("test") shouldEqual "OK"
   }
+
+  it should "fail" in {
+    true shouldEqual false
+  }
 }
