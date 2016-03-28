@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 if [[ ("${TRAVIS_PULL_REQUEST}" == "false") && \
       ("${TRAVIS_JDK_VERSION}" == "oraclejdk7") && \
