@@ -6,7 +6,7 @@ sbtPlugin := true
 
 scalaVersion in Global := "2.10.6"
 
-version := "0.2.0"
+version := "0.2.1"
 
 resolvers += Resolver.jcenterRepo
 
