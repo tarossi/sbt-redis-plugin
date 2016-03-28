@@ -7,9 +7,9 @@ if [[ ("${TRAVIS_PULL_REQUEST}" == "false") && \
       echo Deploying to bintray with version $TRAVIS_TAG
       # Create .bintray/.credentials file
       mkdir -p ~/.bintray
-      echo \"$(< ./publish/credentials.template)\"" > ~/.bintray/.credentials
+      eval "echo \"$(< ./publish/credentials.template)\"" > ~/.bintray/.credentials
 
-#    sbt publish
+      sbt publish
 
       rm ~/.bintray/.credentials
 else
