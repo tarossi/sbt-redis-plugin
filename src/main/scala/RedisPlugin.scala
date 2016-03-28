@@ -18,8 +18,8 @@ object RedisPlugin extends AutoPlugin {
   def defaultSettings: Seq[Setting[_]] = Seq(
     redisInstances := Seq.empty,
     redisBinaries := Seq(
-      ("3.0.7", OS.MAC_OS_X, Architecture.x86_64) -> getResourcePath("redis-server-3.0.7-darwin"),
-      ("3.0.7", OS.UNIX, Architecture.x86_64) -> getResourcePath("redis-server-3.0.7")
+      ("3.0.7", OS.MAC_OS_X, Architecture.x86_64) -> "redis-server-3.0.7-darwin",
+      ("3.0.7", OS.UNIX, Architecture.x86_64) -> "redis-server-3.0.7"
     ),
 
     startRedis := effectivelyStartRedis(redisBinaries.value, redisInstances.value, streams.value.log),
@@ -31,15 +31,6 @@ object RedisPlugin extends AutoPlugin {
       t.andFinally(RedisUtils.stopRedisInstances())
     }
   )
-
-  def getResourcePath(name: String): String = {
-    val resource = getClass.getResource(name)
-    if (resource == null) {
-      // TODO Find a way to access a Logger from a SettingKey
-//      logger.error(s"File is not in the classpath: $name")
-      ""
-    } else resource.getPath
-  }
 
   def buildProvider(redisBinaries: Seq[((String, OS, Architecture), String)]) = {
     redisBinaries
