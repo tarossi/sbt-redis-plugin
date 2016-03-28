@@ -1,3 +1,3 @@
-lazy val redisPlugin = file("..").getAbsoluteFile.toURI
+resolvers += Resolver.url("fmonniot", url("https://dl.bintray.com/fmonniot/sbt-plugins"))(Resolver.ivyStylePatterns)
 
-lazy val root = Project("sample", file(".")) dependsOn redisPlugin
+addSbtPlugin("eu.monniot.redis" % "redis-plugin" % "0.1.1")
