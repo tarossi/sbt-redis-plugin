@@ -29,6 +29,11 @@ object RedisPlugin extends AutoPlugin {
       val t = (test in Test).dependsOn(startRedis)
 
       t.andFinally(RedisUtils.stopRedisInstances())
+    },
+    (testOnly in Test) <<= {
+      val t = (testOnly in Test).dependsOn(startRedis)
+
+      t.andFinally(RedisUtils.stopRedisInstances())
     }
   )
 
