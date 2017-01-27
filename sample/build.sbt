@@ -1,5 +1,3 @@
-import redis.embedded.util.{Architecture, OS}
-
 name := "sample-project"
 version := "1.0"
 

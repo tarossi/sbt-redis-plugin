@@ -6,11 +6,11 @@ sbtPlugin := true
 
 scalaVersion in Global := "2.10.6"
 
-version := "0.2.4"
+version := "0.5.0"
 
 resolvers += Resolver.jcenterRepo
 
-libraryDependencies += "eu.monniot.redis" % "embedded-redis" % "1.2.2"
+libraryDependencies += "eu.monniot.redis" % "embedded-redis" % "1.4.0"
 
 // Scripted - sbt plugin tests
 scriptedSettings

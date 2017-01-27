@@ -1,3 +1,5 @@
+package eu.monniot.redis.plugin
+
 import java.util
 
 import redis.embedded.PortProvider
@@ -7,6 +9,9 @@ import scala.collection.JavaConversions._
 object RedisInstance {
   def apply(version: String, kind: String, ports: Seq[Int]) =
     new RedisInstance(version, kind, new PredefinedPortProvider(scalaToJava(ports)))
+
+  def apply(version: String, kind: String, port: Int) =
+    new RedisInstance(version, kind, new PredefinedPortProvider(scalaToJava(Seq(port))))
 
   private def scalaToJava(list: Seq[Int]): util.List[Integer] = {
     seqAsJavaList(list).asInstanceOf[util.List[Integer]]
@@ -23,7 +28,7 @@ case class RedisInstance(version: String,
 
   import RedisInstance._
 
-  def isRedisCluster = kind == CLUSTER
+  def isRedisCluster: Boolean = kind == CLUSTER
 
-  def isRedisServer = kind == SERVER
+  def isRedisServer: Boolean = kind == SERVER
 }
