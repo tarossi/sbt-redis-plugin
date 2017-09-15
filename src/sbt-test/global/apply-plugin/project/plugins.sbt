@@ -1,1 +1,1 @@
-addSbtPlugin("eu.monniot.redis" % "redis-plugin" % sys.props("project.version"))
+addSbtPlugin("eu.monniot.redis" % "redis-plugin" % sys.props("plugin.version"))

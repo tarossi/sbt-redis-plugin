@@ -19,8 +19,12 @@ object RedisPlugin extends AutoPlugin {
   override lazy val projectSettings = Seq(
     redisInstances := Seq.empty,
     redisBinaries := Seq(
-      ("3.0.7", OS.MAC_OS_X, Architecture.x86_64) -> "redis-server-3.0.7-darwin",
-      ("3.0.7", OS.UNIX, Architecture.x86_64) -> "redis-server-3.0.7"
+      ("3.0.7", OS.UNIX, Architecture.x86_64) -> "redis-server-3.0.7",
+      ("3.2.1", OS.UNIX, Architecture.x86_64) -> "redis-server-3.2.1",
+      ("3.2.1", OS.MAC_OS_X, Architecture.x86) -> "redis-server-3.2.1-mac86",
+      ("3.0.7", OS.MAC_OS_X, Architecture.x86_64) -> "redis-server-3.0.7-mac",
+      ("3.2.1", OS.MAC_OS_X, Architecture.x86_64) -> "redis-server-3.2.1-mac",
+      ("3.2.1", OS.WINDOWS, Architecture.x86_64) -> "redis-server-3.2.1.exe"
     ),
 
     testListeners += new RedisTestsListener(

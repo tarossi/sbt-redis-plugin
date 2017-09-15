@@ -4,7 +4,7 @@ import java.util
 
 import redis.embedded.PortProvider
 import redis.embedded.ports.PredefinedPortProvider
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
 object RedisInstance {
   def apply(version: String, kind: String, ports: Seq[Int]) =
